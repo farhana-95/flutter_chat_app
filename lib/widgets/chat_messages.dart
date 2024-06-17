@@ -8,3 +8,4 @@ class ChatMessages extends StatelessWidget {
     return Center(child: Text('Message'));
   }
 }
+
