@@ -13,7 +13,7 @@ class _NewMessagesState extends State<NewMessages> {
   final _messageController = TextEditingController();
 
   @override
-  void dispose(){
+  void dispose() {
     _messageController.dispose();
     super.dispose();
   }
@@ -21,7 +21,7 @@ class _NewMessagesState extends State<NewMessages> {
   void _sendMessage() async {
     final sendMessage = _messageController.text;
 
-    if(sendMessage.trim().isEmpty){
+    if (sendMessage.trim().isEmpty) {
       return;
     }
 
@@ -29,32 +29,38 @@ class _NewMessagesState extends State<NewMessages> {
     _messageController.clear();
 
     final user = FirebaseAuth.instance.currentUser!;
-    final userData = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+    final userData = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .get();
     FirebaseFirestore.instance.collection('chat').add({
       'text': sendMessage,
       'createdAt': Timestamp.now(),
-      'userId':user.uid,
+      'userId': user.uid,
       'userName': userData.data()!['user_name'],
-      'userImage':userData.data()!['image_url'],
+      'userImage': userData.data()!['image_url'],
     });
-
   }
-
 
   @override
   Widget build(BuildContext context) {
-    return Padding(padding: const EdgeInsets.only(left: 15,right: 2,bottom: 14),
-    child: Row(
-      children: [
-        Expanded(child: TextField(
-          controller: _messageController,
-          textCapitalization: TextCapitalization.sentences,
-          decoration: const InputDecoration(
-            labelText: 'Send a message'
-          ),
-        )),
-        IconButton(onPressed: (){}, icon: const Icon(Icons.send),color: Theme.of(context).colorScheme.primary,)
-      ],
-    ),);
+    return Padding(
+      padding: const EdgeInsets.only(left: 15, right: 2, bottom: 14),
+      child: Row(
+        children: [
+          Expanded(
+              child: TextField(
+            controller: _messageController,
+            textCapitalization: TextCapitalization.sentences,
+            decoration: const InputDecoration(labelText: 'Send a message'),
+          )),
+          IconButton(
+            onPressed: _sendMessage,
+            icon: const Icon(Icons.send),
+            color: Theme.of(context).colorScheme.primary,
+          )
+        ],
+      ),
+    );
   }
 }
